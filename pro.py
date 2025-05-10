@@ -22,7 +22,7 @@ def load_video_frames(input_path, num_frames=60):
             ret, frame = cap.read()
             if not ret:
                 break
-            frame = cv2.resize(frame, (480, 270))
+            frame = cv2.resize(frame, (512, 288))  # Changed to 512x288
             frames.append(frame)
             frame_count += 1
         cap.release()
@@ -50,7 +50,7 @@ def load_video_frames(input_path, num_frames=60):
             frame = cv2.imread(img_path)
             if frame is None:
                 raise ValueError(f"Could not read {img_path}!")
-            frame = cv2.resize(frame, (480, 270))
+            frame = cv2.resize(frame, (512, 288))  # Changed to 512x288
             frames.append(frame)
         print(f"[TRACE] Loaded {len(frames)} frames from directory: {image_files[:5]}...")
 
@@ -158,7 +158,7 @@ def entropy_coding(data):
     print(f"[TRACE] Huffman coding completed. Encoded length: {len(encoded)} bits.")
     return encoded, huff_tree
 
-# Step 6: Bitstream Formation - Fixed with Separate Index for P-frames
+# Step 6: Bitstream Formation - Fixed with Correct Index Variable
 def form_bitstream(frame_types, i_frames_data, p_frames_data):
     print("[TRACE] Step 6: Forming bitstream...")
     print(f"[TRACE] i_frames_data length: {len(i_frames_data)}, p_frames_data length: {len(p_frames_data)}")
@@ -176,7 +176,7 @@ def form_bitstream(frame_types, i_frames_data, p_frames_data):
         else:
             if p_frame_idx >= len(p_frames_data):
                 raise ValueError(f"[ERROR] Not enough P-frame data at index {p_frame_idx}, total P-frames: {len(p_frames_data)}")
-            bitstream.append(p_frames_data[p_frame_idx][0])
+            bitstream.append(p_frames_data[p_frame_idx][0])  # Fixed: Changed p_idx to p_frame_idx
             p_frame_idx += 1
 
     bitstream_str = '\n'.join(bitstream)
@@ -275,5 +275,5 @@ def compress_and_save_video(input_path, output_path):
 
 if __name__ == "__main__":
     input_path = "frames/"
-    output_path = "compressed_video.mp4"
+    output_path = "compressed_videoo.mp4"
     compress_and_save_video(input_path, output_path)
